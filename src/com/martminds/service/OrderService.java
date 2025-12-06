@@ -23,7 +23,7 @@ public class OrderService
     {
         for (OrderItem item : order.getItems()) 
         {
-            Product product = productService.findProductById(item.getProductId());
+            Product product = productService.getProductById(item.getProductId());
             if (product == null || product.getStock() < item.getQuantity()) 
             {
                 throw new OutOfStockException("Product " + (product != null ? product.getName() : item.getProductId()) + " is out of stock!");
@@ -32,7 +32,7 @@ public class OrderService
 
         for (OrderItem item : order.getItems()) 
         {
-            Product product = productService.findProductById(item.getProductId());
+            Product product = productService.getProductById(item.getProductId());
             product.updateStock(-item.getQuantity());
         }
 
