@@ -1,5 +1,6 @@
 package com.martminds.model.payment;
 
+import java.time.LocalDateTime;
 import com.martminds.enums.PaymentMethod;
 import com.martminds.enums.PaymentStatus;
 import com.martminds.exception.PaymentFailedException;
@@ -12,7 +13,8 @@ public abstract class Payment {
     private double amount;
     private PaymentMethod method;
     private PaymentStatus status;
-    private String date;
+    private LocalDateTime createdAt;
+    private LocalDateTime lastUpdatedAt;
 
     public Payment(String paymentId, String userId, String orderId, double amount, PaymentMethod method) {
         this.paymentId = paymentId;
@@ -21,7 +23,8 @@ public abstract class Payment {
         this.amount = amount;
         this.method = method;
         this.status = PaymentStatus.PENDING;
-        this.date = DateTimeUtil.getCurrentTimestamp();
+        this.createdAt = DateTimeUtil.now();
+        this.lastUpdatedAt = DateTimeUtil.now(); 
     }
 
     public String getPaymentId() {
@@ -48,8 +51,12 @@ public abstract class Payment {
         return status;
     }
 
-    public String getDate() {
-        return date;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public LocalDateTime getLastUpdatedAt() {
+        return lastUpdatedAt;
     }
 
     public void setPaymentId(String paymentId) {
@@ -76,8 +83,12 @@ public abstract class Payment {
         this.status = status;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public void setLastUpdatedAt(LocalDateTime lastUpdatedAt) {
+        this.lastUpdatedAt = lastUpdatedAt;
     }
 
     public abstract boolean processPayment() throws PaymentFailedException;
@@ -88,6 +99,7 @@ public abstract class Payment {
         }
 
         this.status = PaymentStatus.REFUNDED;
+        this.lastUpdatedAt = DateTimeUtil.now();
         return true;
     }
 
@@ -97,5 +109,6 @@ public abstract class Payment {
 
     public void updateStatus(PaymentStatus status) {
         this.status = status;
+        this.lastUpdatedAt = DateTimeUtil.now();
     }
 }

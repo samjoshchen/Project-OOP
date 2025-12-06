@@ -3,6 +3,7 @@ package com.martminds.util;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 public class Logger {
     private static final String LOG_FILE = "data/system-log.txt";
@@ -29,7 +30,7 @@ public class Logger {
     }
     
     private static void log(String level, String message) {
-        String timestamp = DateTimeUtil.getCurrentTimestamp();
+        LocalDateTime timestamp = DateTimeUtil.now();
         String logEntry = String.format("[%s] [%s] %s", timestamp, level, message);
         
         System.out.println(logEntry);
