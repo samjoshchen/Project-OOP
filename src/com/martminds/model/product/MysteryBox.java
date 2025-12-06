@@ -10,16 +10,17 @@ public class MysteryBox {
     private String category;
     private String description;
     private int availableStock;
+    private String storeId;
     private List<Product> possibleProducts;
 
-    public MysteryBox(String boxId, String name, double price, String category, String description,
-            int availableStock) {
+    public MysteryBox(String boxId, String name, double price, String category, String description, int availableStock, String storeId) {
         this.boxId = boxId;
         this.name = name;
         this.price = price;
         this.category = category;
         this.description = description;
         this.availableStock = availableStock;
+        this.storeId = storeId;
         this.possibleProducts = new ArrayList<>();
     }
 
@@ -47,6 +48,10 @@ public class MysteryBox {
         return availableStock;
     }
 
+    public String getStoreId() {
+        return storeId;
+    }
+
     public List<Product> getPossibleProducts() {
         return new ArrayList<>(possibleProducts);
     }
@@ -69,6 +74,10 @@ public class MysteryBox {
 
     public void setAvailableStock(int availableStock) {
         this.availableStock = availableStock;
+    }
+
+    public void setStoreId(String storeId) {
+        this.storeId = storeId;
     }
 
     public void addPossibleProduct(Product product) {
