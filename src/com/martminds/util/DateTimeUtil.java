@@ -15,7 +15,8 @@ public class DateTimeUtil {
     }
 
     public static String formatForFile(LocalDateTime dateTime) {
-        if (dateTime == null) return "";
+        if (dateTime == null)
+            return "";
         return dateTime.format(FILE_FORMATTER);
     }
 
@@ -26,13 +27,12 @@ public class DateTimeUtil {
         return LocalDateTime.parse(timestamp, FILE_FORMATTER);
     }
 
-    
     public static String formatForDisplay(LocalDateTime dateTime) {
-        if (dateTime == null) return "N/A";
+        if (dateTime == null)
+            return "N/A";
         return dateTime.format(DISPLAY_FORMATTER);
     }
 
-    
     public static String getCurrentDate() {
         return now().format(DATE_ONLY_FORMATTER);
     }
@@ -41,35 +41,39 @@ public class DateTimeUtil {
         return now().format(TIME_ONLY_FORMATTER);
     }
 
-
     public static long daysBetween(LocalDateTime start, LocalDateTime end) {
-        if (start == null || end == null) return 0;
+        if (start == null || end == null)
+            return 0;
         return ChronoUnit.DAYS.between(start, end);
     }
 
     public static long hoursBetween(LocalDateTime start, LocalDateTime end) {
-        if (start == null || end == null) return 0;
+        if (start == null || end == null)
+            return 0;
         return ChronoUnit.HOURS.between(start, end);
     }
 
     public static long minutesBetween(LocalDateTime start, LocalDateTime end) {
-        if (start == null || end == null) return 0;
+        if (start == null || end == null)
+            return 0;
         return ChronoUnit.MINUTES.between(start, end);
     }
 
     public static boolean isPast(LocalDateTime dateTime) {
-        if (dateTime == null) return false;
+        if (dateTime == null)
+            return false;
         return dateTime.isBefore(now());
     }
 
-
     public static boolean isFuture(LocalDateTime dateTime) {
-        if (dateTime == null) return false;
+        if (dateTime == null)
+            return false;
         return dateTime.isAfter(now());
     }
 
     public static boolean isToday(LocalDateTime dateTime) {
-        if (dateTime == null) return false;
+        if (dateTime == null)
+            return false;
         return dateTime.toLocalDate().equals(now().toLocalDate());
     }
 }

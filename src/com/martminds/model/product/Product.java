@@ -9,7 +9,8 @@ public class Product {
     private String storeId;
     private String category;
 
-    public Product(String productId, String name, double price, int stock, String description, String storeId, String category) {
+    public Product(String productId, String name, double price, int stock, String description, String storeId,
+            String category) {
         this.productId = productId;
         this.name = name;
         this.price = price;
@@ -70,6 +71,6 @@ public class Product {
     @Override
     public String toString() {
         return String.format("Product[ID=%s, Name=%s, Price=%.2f, Stock=%d]",
-            productId, name, price, stock);
+                productId, name, price, stock);
     }
 }

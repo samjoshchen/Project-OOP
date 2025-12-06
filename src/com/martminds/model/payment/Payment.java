@@ -24,7 +24,7 @@ public abstract class Payment {
         this.method = method;
         this.status = PaymentStatus.PENDING;
         this.createdAt = DateTimeUtil.now();
-        this.lastUpdatedAt = DateTimeUtil.now(); 
+        this.lastUpdatedAt = DateTimeUtil.now();
     }
 
     public String getPaymentId() {
