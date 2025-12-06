@@ -10,7 +10,11 @@ public class Address {
     private String province;
     
     public Address() {
-      
+        this.street = "";
+        this.city = "";
+        this.postalCode = "";
+        this.district = "";
+        this.province = "";
     }
     
     public Address(String street, String city, String postalCode, String district, String province) {
