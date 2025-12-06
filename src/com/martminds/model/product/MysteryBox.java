@@ -13,7 +13,8 @@ public class MysteryBox {
     private String storeId;
     private List<Product> possibleProducts;
 
-    public MysteryBox(String boxId, String name, double price, String category, String description, int availableStock, String storeId) {
+    public MysteryBox(String boxId, String name, double price, String category, String description, int availableStock,
+            String storeId) {
         this.boxId = boxId;
         this.name = name;
         this.price = price;
@@ -108,6 +109,6 @@ public class MysteryBox {
     @Override
     public String toString() {
         return String.format("MysteryBox[ID=%s, Name=%s, Price=%.2f, Stock=%d, Products=%d]",
-            boxId, name, price, availableStock, possibleProducts.size());
+                boxId, name, price, availableStock, possibleProducts.size());
     }
 }

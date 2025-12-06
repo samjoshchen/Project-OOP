@@ -7,7 +7,6 @@ public class ValidationUtil {
     private static final Pattern PHONE_PATTERN = Pattern.compile("^[0-9]{10,15}$");
     private static final Pattern POSTAL_CODE_PATTERN = Pattern.compile("^[0-9]{5}$");
 
-    
     // Validate email format
     public static boolean isValidEmail(String email) {
         if (email == null || email.trim().isEmpty()) {
@@ -60,7 +59,7 @@ public class ValidationUtil {
         if (cardNumber == null || cardNumber.trim().isEmpty()) {
             return false;
         }
-        
+
         String cleaned = cardNumber.replaceAll("[\\s-]", "");
         if (!cleaned.matches("^[0-9]{13,19}$")) {
             return false;

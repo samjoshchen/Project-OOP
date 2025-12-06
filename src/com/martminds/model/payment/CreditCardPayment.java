@@ -11,7 +11,8 @@ public class CreditCardPayment extends Payment {
     private String expiry;
     private String cvv;
 
-    public CreditCardPayment(String paymentId, String userId, String orderId, double amount, String cardNumber, String cardHolder, String expiry, String cvv) {
+    public CreditCardPayment(String paymentId, String userId, String orderId, double amount, String cardNumber,
+            String cardHolder, String expiry, String cvv) {
         super(paymentId, userId, orderId, amount, PaymentMethod.CREDIT_CARD);
         this.cardNumber = cardNumber;
         this.cardHolder = cardHolder;
@@ -121,6 +122,6 @@ public class CreditCardPayment extends Payment {
     @Override
     public String toString() {
         return String.format("CreditCardPayment[ID=%s, Amount=%.2f, Card=%s, Holder=%s, Status=%s]",
-            getPaymentId(), getAmount(), maskCardNumber(), cardHolder, getStatus());
+                getPaymentId(), getAmount(), maskCardNumber(), cardHolder, getStatus());
     }
 }

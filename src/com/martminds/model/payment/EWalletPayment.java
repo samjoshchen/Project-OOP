@@ -8,7 +8,8 @@ public class EWalletPayment extends Payment {
     private String walletId;
     private String walletProvider;
 
-    public EWalletPayment(String paymentId, String userId, String orderId, double amount, String walletId, String walletProvider) {
+    public EWalletPayment(String paymentId, String userId, String orderId, double amount, String walletId,
+            String walletProvider) {
         super(paymentId, userId, orderId, amount, PaymentMethod.EWALLET);
         this.walletId = walletId;
         this.walletProvider = walletProvider;
@@ -51,8 +52,8 @@ public class EWalletPayment extends Payment {
         }
 
         if (!walletId.matches("[a-zA-Z0-9]{6,20}")) {
-            throw new PaymentFailedException(getPaymentId(), 
-                "Invalid wallet ID format (expected 6-20 alphanumeric characters)");
+            throw new PaymentFailedException(getPaymentId(),
+                    "Invalid wallet ID format (expected 6-20 alphanumeric characters)");
         }
 
         setStatus(PaymentStatus.SUCCESS);
@@ -75,6 +76,6 @@ public class EWalletPayment extends Payment {
     @Override
     public String toString() {
         return String.format("EWalletPayment[ID=%s, Amount=%.2f, Provider=%s, WalletID=%s, Status=%s]",
-            getPaymentId(), getAmount(), walletProvider, walletId, getStatus());
+                getPaymentId(), getAmount(), walletProvider, walletId, getStatus());
     }
 }

@@ -1,4 +1,5 @@
 package com.martminds.model.order;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.time.LocalDateTime;
@@ -7,24 +8,23 @@ import com.martminds.model.common.*;
 import com.martminds.exception.*;
 import com.martminds.util.DateTimeUtil;
 
-public class Order
-{
+public class Order {
     private String orderId;
     private String customerId;
     private String storeId;
     private String driverId;
-    
+
     private double totalPrice;
     private Address deliveryAddress;
     private List<OrderItem> items;
-    
+
     private OrderStatus status;
-    
+
     private LocalDateTime createdAt;
     private LocalDateTime lastUpdatedAt;
 
-    public Order(String orderId, String customerId, String storeId, Address deliveryAddress) throws InvalidOrderException
-    {
+    public Order(String orderId, String customerId, String storeId, Address deliveryAddress)
+            throws InvalidOrderException {
         if (orderId == null || orderId.trim().isEmpty()) {
             throw new InvalidOrderException("Order ID cannot be empty");
         }
@@ -45,13 +45,13 @@ public class Order
         this.customerId = customerId;
         this.storeId = storeId;
         this.deliveryAddress = deliveryAddress;
-        
+
         this.items = new ArrayList<>();
         this.totalPrice = 0;
         this.driverId = null;
-        
+
         this.status = OrderStatus.PENDING;
-        
+
         this.createdAt = DateTimeUtil.now();
         this.lastUpdatedAt = DateTimeUtil.now();
     }
@@ -95,7 +95,7 @@ public class Order
     public LocalDateTime getLastUpdatedAt() {
         return lastUpdatedAt;
     }
-    
+
     public void addItem(OrderItem item) throws InvalidOrderException {
         if (item == null) {
             throw new InvalidOrderException("Cannot add null item to order", orderId);
@@ -145,7 +145,7 @@ public class Order
         }
         if (!isValidStatusTransition(this.status, newStatus)) {
             throw new InvalidOrderException(
-                String.format("Invalid status transition from %s to %s", this.status, newStatus), orderId);
+                    String.format("Invalid status transition from %s to %s", this.status, newStatus), orderId);
         }
         this.status = newStatus;
         updateTimestamp();
@@ -168,7 +168,8 @@ public class Order
 
     public void markAsDelivered() throws InvalidOrderException {
         if (this.status != OrderStatus.OUT_FOR_DELIVERY) {
-            throw new InvalidOrderException("Can only mark orders as delivered when status is OUT_FOR_DELIVERY", orderId);
+            throw new InvalidOrderException("Can only mark orders as delivered when status is OUT_FOR_DELIVERY",
+                    orderId);
         }
         if (this.driverId == null) {
             throw new InvalidOrderException("Cannot mark as delivered without assigned driver", orderId);
@@ -207,29 +208,29 @@ public class Order
                 return false;
         }
     }
-    //#endregion
+    // #endregion
 
     public String toFileString() {
         return String.format("%s,%s,%s,%s,%.2f,%s,%s,%s,%s",
-            orderId, customerId, storeId,
-            driverId != null ? driverId : "",
-            totalPrice, status.name(),
-            deliveryAddress.toString(),
-            DateTimeUtil.formatForFile(createdAt),
-            DateTimeUtil.formatForFile(lastUpdatedAt));
+                orderId, customerId, storeId,
+                driverId != null ? driverId : "",
+                totalPrice, status.name(),
+                deliveryAddress.toString(),
+                DateTimeUtil.formatForFile(createdAt),
+                DateTimeUtil.formatForFile(lastUpdatedAt));
     }
 
     @Override
     public String toString() {
         return String.format("Order[ID=%s, Customer=%s, Store=%s, Status=%s, Total=%.2f, Items=%d, Created=%s]",
-            orderId, customerId, storeId, status, totalPrice, items.size(),
-            DateTimeUtil.formatForDisplay(createdAt));
+                orderId, customerId, storeId, status, totalPrice, items.size(),
+                DateTimeUtil.formatForDisplay(createdAt));
     }
 
     private void updateTimestamp() {
         this.lastUpdatedAt = DateTimeUtil.now();
     }
-    
+
     public boolean isRepurchasable() {
         return status == OrderStatus.DELIVERED;
     }
@@ -242,4 +243,3 @@ public class Order
         return items.stream().mapToInt(OrderItem::getQuantity).sum();
     }
 }
-
