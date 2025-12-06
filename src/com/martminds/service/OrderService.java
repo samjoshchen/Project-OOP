@@ -11,6 +11,7 @@ import com.martminds.exception.OutOfStockException;
 
 public class OrderService {
     private static OrderService orderService;
+    ProductService productService = ProductService.getProductService();
     private List<Order> orders;
 
     private OrderService() {
