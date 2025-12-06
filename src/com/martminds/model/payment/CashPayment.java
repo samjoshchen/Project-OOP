@@ -40,7 +40,6 @@ public class CashPayment extends Payment {
         return 0;
     }
 
-
     @Override
     public boolean processPayment() throws PaymentFailedException {
         if (!validateAmount()) {
@@ -48,9 +47,9 @@ public class CashPayment extends Payment {
         }
 
         if (receivedAmount < getAmount()) {
-            throw new PaymentFailedException(getPaymentId(), 
-                String.format("Insufficient cash received. Required: %.2f, Received: %.2f", 
-                    getAmount(), receivedAmount));
+            throw new PaymentFailedException(getPaymentId(),
+                    String.format("Insufficient cash received. Required: %.2f, Received: %.2f",
+                            getAmount(), receivedAmount));
         }
 
         this.changeAmount = calculateChange();
@@ -64,6 +63,6 @@ public class CashPayment extends Payment {
     @Override
     public String toString() {
         return String.format("CashPayment[ID=%s, Amount=%.2f, Received=%.2f, Change=%.2f, Status=%s]",
-            getPaymentId(), getAmount(), receivedAmount, changeAmount, getStatus());
+                getPaymentId(), getAmount(), receivedAmount, changeAmount, getStatus());
     }
 }

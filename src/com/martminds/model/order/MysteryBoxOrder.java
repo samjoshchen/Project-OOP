@@ -14,20 +14,20 @@ public class MysteryBoxOrder {
     private String customerId;
     private String boxId;
     private String boxName;
-    
+
     private OrderStatus status;
     private double price;
     private Address deliveryAddress;
     private String driverId;
-    
+
     private List<Product> actualContents;
     private boolean contentsRevealed;
-    
+
     private LocalDateTime createdAt;
     private LocalDateTime lastUpdatedAt;
 
-    public MysteryBoxOrder(String boxOrderId, String customerId, String boxId, String boxName, double price, Address deliveryAddress) throws InvalidOrderException
-    {
+    public MysteryBoxOrder(String boxOrderId, String customerId, String boxId, String boxName, double price,
+            Address deliveryAddress) throws InvalidOrderException {
         if (boxOrderId == null || boxOrderId.trim().isEmpty()) {
             throw new InvalidOrderException("Mystery box order ID cannot be empty");
         }
@@ -56,12 +56,12 @@ public class MysteryBoxOrder {
         this.boxName = boxName;
         this.price = price;
         this.deliveryAddress = deliveryAddress;
-        
+
         this.status = OrderStatus.PENDING;
         this.driverId = null;
         this.actualContents = new ArrayList<>();
         this.contentsRevealed = false;
-        
+
         this.createdAt = DateTimeUtil.now();
         this.lastUpdatedAt = DateTimeUtil.now();
     }
@@ -142,7 +142,7 @@ public class MysteryBoxOrder {
         }
         if (!isValidStatusTransition(this.status, newStatus)) {
             throw new InvalidOrderException(
-                String.format("Invalid status transition from %s to %s", this.status, newStatus), boxOrderId);
+                    String.format("Invalid status transition from %s to %s", this.status, newStatus), boxOrderId);
         }
         this.status = newStatus;
         updateTimestamp();
@@ -165,7 +165,8 @@ public class MysteryBoxOrder {
 
     public void markAsDelivered() throws InvalidOrderException {
         if (this.status != OrderStatus.OUT_FOR_DELIVERY) {
-            throw new InvalidOrderException("Can only mark orders as delivered when status is OUT_FOR_DELIVERY", boxOrderId);
+            throw new InvalidOrderException("Can only mark orders as delivered when status is OUT_FOR_DELIVERY",
+                    boxOrderId);
         }
         if (this.driverId == null) {
             throw new InvalidOrderException("Cannot mark as delivered without assigned driver", boxOrderId);
@@ -191,7 +192,7 @@ public class MysteryBoxOrder {
     public int getActualContentsCount() {
         return actualContents.size();
     }
-    
+
     public List<Product> getActualContents() {
         if (!contentsRevealed) {
             return new ArrayList<>();
@@ -225,19 +226,20 @@ public class MysteryBoxOrder {
 
     public String toFileString() {
         return String.format("%s,%s,%s,%s,%.2f,%s,%s,%s,%s,%s,%b",
-            boxOrderId, customerId, boxId, boxName, price,
-            status.name(), deliveryAddress.toString(),
-            driverId != null ? driverId : "",
-            DateTimeUtil.formatForFile(createdAt),
-            DateTimeUtil.formatForFile(lastUpdatedAt),
-            contentsRevealed);
+                boxOrderId, customerId, boxId, boxName, price,
+                status.name(), deliveryAddress.toString(),
+                driverId != null ? driverId : "",
+                DateTimeUtil.formatForFile(createdAt),
+                DateTimeUtil.formatForFile(lastUpdatedAt),
+                contentsRevealed);
     }
 
     @Override
     public String toString() {
-        return String.format("MysteryBoxOrder[ID=%s, Customer=%s, Box=%s, Status=%s, Price=%.2f, Revealed=%s, Created=%s]",
-            boxOrderId, customerId, boxName, status, price, 
-            contentsRevealed ? "Yes" : "No",
-            DateTimeUtil.formatForDisplay(createdAt));
+        return String.format(
+                "MysteryBoxOrder[ID=%s, Customer=%s, Box=%s, Status=%s, Price=%.2f, Revealed=%s, Created=%s]",
+                boxOrderId, customerId, boxName, status, price,
+                contentsRevealed ? "Yes" : "No",
+                DateTimeUtil.formatForDisplay(createdAt));
     }
 }

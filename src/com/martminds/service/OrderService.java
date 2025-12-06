@@ -9,14 +9,19 @@ import com.martminds.model.product.Product;
 import com.martminds.exception.InvalidOrderException;
 import com.martminds.exception.OutOfStockException;
 
-public class OrderService 
-{
-    private static ArrayList<Order> orders = new ArrayList<>();
-    private ProductService productService;
+public class OrderService {
+    private static OrderService orderService;
+    private List<Order> orders;
 
-    public OrderService(ProductService productService) 
-    {
-        this.productService = productService;
+    private OrderService() {
+        this.orders = new ArrayList<>();
+    }
+
+    public static OrderService getOrderService() {
+        if (orderService == null) {
+            orderService = new OrderService();
+        }
+        return orderService;
     }
 
     public Order createOrder(Order order) throws OutOfStockException 
@@ -40,37 +45,29 @@ public class OrderService
         return order;
     }
 
-    public Order findOrderById(String id) 
-    {
-        for (Order o : orders) 
-        {
-            if (o.getOrderId().equals(id)) 
-            {
+    public Order findOrderById(String id) {
+        for (Order o : orders) {
+            if (o.getOrderId().equals(id)) {
                 return o;
             }
         }
         return null;
     }
 
-    public List<Order> getOrdersByCustomer(String customerId) 
-    {
+    public List<Order> getOrdersByCustomer(String customerId) {
         List<Order> customerOrders = new ArrayList<>();
-        for (Order o : orders) 
-        {
-            if (o.getCustomerId().equals(customerId)) 
-            {
+        for (Order o : orders) {
+            if (o.getCustomerId().equals(customerId)) {
                 customerOrders.add(o);
             }
         }
         return customerOrders;
     }
 
-    public void updateOrderStatus(String orderId, OrderStatus newStatus) throws InvalidOrderException
-    {
+    public void updateOrderStatus(String orderId, OrderStatus newStatus) throws InvalidOrderException {
         Order order = findOrderById(orderId);
-        if (order != null)
-        {
-            order.updateStatus(newStatus); 
+        if (order != null) {
+            order.updateStatus(newStatus);
         }
     }
 }

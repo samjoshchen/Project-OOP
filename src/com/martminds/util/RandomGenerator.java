@@ -37,16 +37,16 @@ public class RandomGenerator {
         if (items == null || items.isEmpty() || count <= 0) {
             return new ArrayList<>();
         }
-        
+
         List<T> shuffled = new ArrayList<>(items);
         List<T> selected = new ArrayList<>();
-        
+
         int selectCount = Math.min(count, items.size());
         for (int i = 0; i < selectCount; i++) {
             int index = random.nextInt(shuffled.size());
             selected.add(shuffled.remove(index));
         }
-        
+
         return selected;
     }
 
