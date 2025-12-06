@@ -95,17 +95,14 @@ public class Address {
         return fullAddress.toString();
     }
     
-    // Return address as string
+    // Used for logging, storing, and displaying address info
     @Override
     public String toString() {
         return getFullAddress();
     }
     
     public boolean isComplete() {
-        return street != null && !street.isEmpty() &&
-               city != null && !city.isEmpty() &&
-               postalCode != null && !postalCode.isEmpty() &&
-               district != null && !district.isEmpty() &&
-               province != null && !province.isEmpty();
+        return street != null && !street.isEmpty() && city != null && !city.isEmpty() && postalCode != null && !postalCode.isEmpty() &&
+            district != null && !district.isEmpty() && province != null && !province.isEmpty();
     }
 }
