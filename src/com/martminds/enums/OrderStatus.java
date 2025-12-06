@@ -1,6 +1,5 @@
 package com.martminds.enums;
 
-// Enum representing the various statuses an order can have
 public enum OrderStatus {
     PENDING("Pending", "Order has been placed and awaiting confirmation"),
     CONFIRMED("Confirmed", "Order has been confirmed by the store"),
