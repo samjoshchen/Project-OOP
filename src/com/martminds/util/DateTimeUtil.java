@@ -9,7 +9,7 @@ public class DateTimeUtil {
     private static final DateTimeFormatter DATE_ONLY_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private static final DateTimeFormatter TIME_ONLY_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss");
 
-    // Parse current time to formatted string
+
     public static String getCurrentTimestamp() {
         return LocalDateTime.now().format(DEFAULT_FORMATTER);
     }
@@ -22,23 +22,30 @@ public class DateTimeUtil {
         return LocalDateTime.now().format(TIME_ONLY_FORMATTER);
     }
 
-    // Calculate difference between two dates in days.
-    public static long daysBetween(LocalDateTime start, LocalDateTime end) {
-        return ChronoUnit.DAYS.between(start, end);
+
+    public static long daysBetween(String start, String end) {
+        return ChronoUnit.DAYS.between(parseDateTime(start), parseDateTime(end));
     }
 
-    // Calculate difference between two dates in hours.
-    public static long hoursBetween(LocalDateTime start, LocalDateTime end) {
-        return ChronoUnit.HOURS.between(start, end);
+    public static long hoursBetween(String start, String end) {
+        return ChronoUnit.HOURS.between(parseDateTime(start), parseDateTime(end));
     }
 
-    // Check if a date is in the past
-    public static boolean isPast(LocalDateTime dateTime) {
-        return dateTime.isBefore(LocalDateTime.now());
+    public static long minutesBetween(String start, String end) {
+        return ChronoUnit.MINUTES.between(parseDateTime(start), parseDateTime(end));
     }
 
-    // Check if a date is in the future
-    public static boolean isFuture(LocalDateTime dateTime) {
-        return dateTime.isAfter(LocalDateTime.now());
+    
+    public static boolean isPast(String dateTime) {
+        return parseDateTime(dateTime).isBefore(LocalDateTime.now());
+    }
+
+    public static boolean isFuture(String dateTime) {
+        return parseDateTime(dateTime).isAfter(LocalDateTime.now());
+    }
+
+
+    public static LocalDateTime parseDateTime(String timestamp) {
+        return LocalDateTime.parse(timestamp, DEFAULT_FORMATTER);
     }
 }

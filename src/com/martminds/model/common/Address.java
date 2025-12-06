@@ -95,7 +95,7 @@ public class Address {
         return fullAddress.toString();
     }
     
-    // Return address as string
+    // Return address as string used for logging, storing, and display
     @Override
     public String toString() {
         return getFullAddress();
