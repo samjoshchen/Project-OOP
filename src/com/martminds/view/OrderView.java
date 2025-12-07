@@ -14,19 +14,19 @@ import com.martminds.util.Input;
 
 public class OrderView {
     public void displayOrderList(List<Order> orders) {
-        System.out.println("=== Orders List ===");
+        System.out.println("\nOrders List\n");
         for (Order order : orders) {
-            System.out.printf("ID: %s | Status: %s | Total: Rp%.2f | Date: %s%n",
+            System.out.printf("ID: %s | Status: %s | Total: Rp%.2f | Date: %s\n",
                     order.getOrderId(),
                     order.getStatus(),
                     order.getTotalPrice(),
                     order.getCreatedAt());
         }
-        System.out.println("====================");
+        System.out.println();
     }
 
     public Address getDeliveryAddress() {
-        System.out.println("=== Enter Delivery Address ===");
+        System.out.println("\nEnter Delivery Address\n");
         String street = Input.promptString("Street: ");
         String city = Input.promptString("City: ");
         String postalCode = Input.promptString("Postal Code: ");
@@ -39,7 +39,7 @@ public class OrderView {
     public List<OrderItem> collectCartItems() throws InvalidOrderException {
         ProductService productService = ProductService.getInstance();
         List<OrderItem> items = new ArrayList<>();
-        System.out.println("=== Add Items to Cart (type 'done' to finish) ===");
+        System.out.println("\nAdd Items to Cart (type 'done' to finish)\n");
 
         while (true) {
             String productId = Input.promptString("Product ID: ");

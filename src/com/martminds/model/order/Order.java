@@ -13,7 +13,7 @@ public class Order {
     private String customerId;
     private String storeId;
     private String driverId;
-
+    
     private double totalPrice;
     private Address deliveryAddress;
     private List<OrderItem> items;

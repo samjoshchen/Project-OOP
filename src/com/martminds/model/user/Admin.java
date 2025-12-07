@@ -5,7 +5,6 @@ import java.util.List;
 import com.martminds.enums.*;
 
 public class Admin extends User {
-
     private List<String> adminPermissions;
 
     public Admin(String userId, String name, String email, String password, String phone, double balance) {

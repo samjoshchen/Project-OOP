@@ -5,7 +5,6 @@ import java.util.List;
 import com.martminds.enums.*;
 
 public class Customer extends User {
-
     private List<String> orderHistory;
     private List<String> mysteryBoxHistory;
 
