@@ -5,7 +5,6 @@ import java.util.List;
 import com.martminds.enums.*;
 
 public class Driver extends User {
-
     private boolean isAvailable;
     private List<String> deliveryHistory;
     private double latitude;

@@ -68,4 +68,8 @@ public class OrderService {
             order.updateStatus(newStatus);
         }
     }
+    
+    public List<Order> getAllOrders() {
+        return new ArrayList<>(orders);
+    }
 }
