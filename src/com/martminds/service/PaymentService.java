@@ -10,18 +10,18 @@ import java.util.List;
 import java.util.UUID;
 
 public class PaymentService {
-    private static PaymentService paymentService;
+    private static PaymentService instance;
     private List<Payment> payments;
 
     private PaymentService() {
         this.payments = new ArrayList<>();
     }
 
-    public static PaymentService getPaymentService() {
-        if (paymentService == null) {
-            paymentService = new PaymentService();
+    public static PaymentService getInstance() {
+        if (instance == null) {
+            instance = new PaymentService();
         }
-        return paymentService;
+        return instance;
     }
 
     public Payment createPayment(String userId, String orderId, double amount, PaymentMethod method,

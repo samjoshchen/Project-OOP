@@ -10,34 +10,31 @@ import com.martminds.exception.InvalidOrderException;
 import com.martminds.exception.OutOfStockException;
 
 public class OrderService {
-    private static OrderService orderService;
-    ProductService productService = ProductService.getProductService();
+    private static OrderService instance;
+    private final ProductService productService = ProductService.getInstance();
     private List<Order> orders;
 
     private OrderService() {
         this.orders = new ArrayList<>();
     }
 
-    public static OrderService getOrderService() {
-        if (orderService == null) {
-            orderService = new OrderService();
+    public static OrderService getInstance() {
+        if (instance == null) {
+            instance = new OrderService();
         }
-        return orderService;
+        return instance;
     }
 
-    public Order createOrder(Order order) throws OutOfStockException 
-    {
-        for (OrderItem item : order.getItems()) 
-        {
+    public Order createOrder(Order order) throws OutOfStockException {
+        for (OrderItem item : order.getItems()) {
             Product product = productService.getProductById(item.getProductId());
-            if (product == null || product.getStock() < item.getQuantity()) 
-            {
-                throw new OutOfStockException("Product " + (product != null ? product.getName() : item.getProductId()) + " is out of stock!");
+            if (product == null || product.getStock() < item.getQuantity()) {
+                throw new OutOfStockException(
+                        "Product " + (product != null ? product.getName() : item.getProductId()) + " is out of stock!");
             }
         }
 
-        for (OrderItem item : order.getItems()) 
-        {
+        for (OrderItem item : order.getItems()) {
             Product product = productService.getProductById(item.getProductId());
             product.updateStock(-item.getQuantity());
         }

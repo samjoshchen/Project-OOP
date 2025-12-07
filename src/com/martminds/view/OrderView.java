@@ -12,13 +12,10 @@ import com.martminds.service.ProductService;
 import com.martminds.util.RandomGenerator;
 import com.martminds.util.Input;
 
-public class OrderView 
-{
-    public void displayOrderList(List<Order> orders) 
-    {
+public class OrderView {
+    public void displayOrderList(List<Order> orders) {
         System.out.println("=== Orders List ===");
-        for (Order order : orders) 
-        {
+        for (Order order : orders) {
             System.out.printf("ID: %s | Status: %s | Total: Rp%.2f | Date: %s%n",
                     order.getOrderId(),
                     order.getStatus(),
@@ -28,8 +25,7 @@ public class OrderView
         System.out.println("====================");
     }
 
-    public Address getDeliveryAddress() 
-    {
+    public Address getDeliveryAddress() {
         System.out.println("=== Enter Delivery Address ===");
         String street = Input.promptString("Street: ");
         String city = Input.promptString("City: ");
@@ -39,40 +35,36 @@ public class OrderView
 
         return new Address(street, city, postalCode, district, province);
     }
-    
-    public List<OrderItem> collectCartItems() throws InvalidOrderException 
-    {
-        ProductService productService = ProductService.getProductService();
+
+    public List<OrderItem> collectCartItems() throws InvalidOrderException {
+        ProductService productService = ProductService.getInstance();
         List<OrderItem> items = new ArrayList<>();
         System.out.println("=== Add Items to Cart (type 'done' to finish) ===");
-        
-        while (true) 
-        {
+
+        while (true) {
             String productId = Input.promptString("Product ID: ");
-            if (productId.equalsIgnoreCase("done")) 
-            {
+            if (productId.equalsIgnoreCase("done")) {
                 break;
             }
-            
+
             int quantity = Input.promptInt("Quantity: ");
 
-            if (!productService.validateProductAvailability(productId, quantity)) 
-            {
+            if (!productService.validateProductAvailability(productId, quantity)) {
                 System.out.println("Invalid product or insufficient stock.");
                 continue;
             }
 
             Product product = productService.getProductById(productId);
 
-                String orderItemId = RandomGenerator.generateId();
+            String orderItemId = RandomGenerator.generateId();
             OrderItem item = new OrderItem(orderItemId,
-                                            product.getProductId(),
-                                            product.getName(),
-                                            quantity,
-                                            product.getPrice());
+                    product.getProductId(),
+                    product.getName(),
+                    quantity,
+                    product.getPrice());
             items.add(item);
 
-        System.out.println("Added: " + product.getName() + " x" + quantity);
+            System.out.println("Added: " + product.getName() + " x" + quantity);
         }
 
         return items;

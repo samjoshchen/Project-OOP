@@ -3,11 +3,9 @@ package com.martminds.view;
 import com.martminds.model.product.Product;
 import java.util.List;
 
-public class ProductView 
-{
+public class ProductView {
 
-    public void displayProduct(Product product) 
-    {
+    public void displayProduct(Product product) {
         System.out.println("=== Product Details ===");
         System.out.println("ID: " + product.getProductId());
         System.out.println("Name: " + product.getName());
@@ -20,13 +18,11 @@ public class ProductView
         System.out.println("=======================");
     }
 
-    public void displayProductList(List<Product> products) 
-    {
+    public void displayProductList(List<Product> products) {
         System.out.println("=== Product List ===");
-        for (Product product : products) 
-        {
+        for (Product product : products) {
             System.out.println(product.getProductId() + " - " + product.getName() +
-                               " ($" + product.getPrice() + ") | Stock: " + product.getStock());
+                    " ($" + product.getPrice() + ") | Stock: " + product.getStock());
         }
         System.out.println("====================");
     }
