@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ProductService {
-    private static ProductService productService;
+    private static ProductService instance;
     private List<Product> products;
 
     private ProductService() {
@@ -13,11 +13,11 @@ public class ProductService {
         createSampleProducts();
     }
 
-    public static ProductService getProductService() {
-        if (productService == null) {
-            productService = new ProductService();
+    public static ProductService getInstance() {
+        if (instance == null) {
+            instance = new ProductService();
         }
-        return productService;
+        return instance;
     }
 
     public List<Product> getAllProducts() {
@@ -67,6 +67,49 @@ public class ProductService {
 
         product.updateStock(quantity);
         return true;
+    }
+
+    public List<Product> getProductsByStore(String storeId) {
+        List<Product> results = new ArrayList<>();
+        for (Product product : products) {
+            if (product.getStoreId().equals(storeId)) {
+                results.add(product);
+            }
+        }
+        return results;
+    }
+
+    public List<Product> getAvailableProducts() {
+        List<Product> results = new ArrayList<>();
+        for (Product product : products) {
+            if (product.isAvailable()) {
+                results.add(product);
+            }
+        }
+        return results;
+    }
+
+    public boolean removeProduct(String productId) {
+        Product product = getProductById(productId);
+        if (product == null) {
+            return false;
+        }
+        return products.remove(product);
+    }
+
+    public List<String> getAllCategories() {
+        List<String> categories = new ArrayList<>();
+        for (Product product : products) {
+            if (!categories.contains(product.getCategory())) {
+                categories.add(product.getCategory());
+            }
+        }
+        return categories;
+    }
+
+    public boolean validateProductAvailability(String productId, int requiredQuantity) {
+        Product product = getProductById(productId);
+        return product != null && product.getStock() >= requiredQuantity;
     }
 
     private void createSampleProducts() {
