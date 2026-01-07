@@ -156,7 +156,7 @@ The application provides detailed validation prompts with format requirements an
 
 ## Class Diagram
 
-### Simplified
+### Simplified (Models Only)
 
 ```mermaid
 classDiagram
@@ -184,13 +184,14 @@ classDiagram
         +withdrawFunds(amount) boolean
     }
 
-    class Customer~User~ {
+    class Customer~User~  {
         +addMysteryBoxOrder(orderId) void
     }
 
-    class Admin~User~
+    class Admin~User~  {
+    }
 
-    class Driver~User~ {
+    class Driver~User~  {
         -boolean isAvailable
         -List~String~ deliveryHistory
         +acceptOrder(orderId) void
@@ -204,8 +205,31 @@ classDiagram
         -int stock
         -String description
         -String category
+        -String storeId
         +updateStock(quantity) void
         +isAvailable() boolean
+    }
+
+    class MysteryBox {
+        -String boxId
+        -String name
+        -double price
+        -String category
+        -String description
+        -int availableStock
+        -String storeId
+        -List~Product~ possibleProducts
+        +addPossibleProduct(Product) void
+        +isAvailable() boolean
+    }
+
+    class Store {
+        -String storeId
+        -String name
+        -Address address
+        -String contactNumber
+        -double rating
+        +addRating(newRating) void
     }
 
     class OrderItem {
@@ -229,6 +253,19 @@ classDiagram
         +addItem(OrderItem) void
         +calculateTotal() void
         +updateStatus(OrderStatus) void
+    }
+
+    class MysteryBoxOrder {
+        -String boxOrderId
+        -String customerId
+        -String boxId
+        -String boxName
+        -double price
+        -OrderStatus status
+        -Address deliveryAddress
+        -List~Product~ actualContents
+        +setActualContents(products) void
+        +revealContents() List~Product~
     }
 
     class Payment {
@@ -262,16 +299,30 @@ classDiagram
         -String cvv
     }
 
-    User <|-- Customer
-    User <|-- Admin
-    User <|-- Driver
-    User --> Address
-    Payment <|-- CashPayment
-    Payment <|-- EWalletPayment
-    Payment <|-- CreditCardPayment
-    Order *-- OrderItem
-    Order --> Address
-    Order --> User
+    User <|-- Customer : extends
+    User <|-- Admin : extends
+    User <|-- Driver : extends
+    Payment <|-- CashPayment : extends
+    Payment <|-- EWalletPayment : extends
+    Payment <|-- CreditCardPayment : extends
+
+    Order *-- OrderItem : contains
+    MysteryBox *-- Product : contains
+
+    User --> Address : has
+    Store --> Address : located at
+    Order --> Address : delivers to
+    MysteryBoxOrder --> Address : delivers to
+    Order --> Customer : placed by
+    Order --> Driver : delivered by
+    Order --> Store : from
+    MysteryBoxOrder --> Customer : placed by
+    MysteryBoxOrder --> Driver : delivered by
+    MysteryBoxOrder --> Product : contains
+    Payment --> User : paid by
+    Payment --> Order : for
+    Product --> Store : sold by
+    MysteryBox --> Store : from
 ```
 
 ### Complete
