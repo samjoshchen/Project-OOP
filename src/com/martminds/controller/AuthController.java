@@ -4,6 +4,7 @@ import com.martminds.model.user.Admin;
 import com.martminds.model.user.Customer;
 import com.martminds.model.user.Driver;
 import com.martminds.model.user.User;
+import com.martminds.model.common.Address;
 import com.martminds.enums.UserRole;
 import com.martminds.service.UserService;
 import com.martminds.util.Session;
@@ -13,7 +14,7 @@ public class AuthController {
 
     public User register(String id, String name, String email, String password, String phone, UserRole role,
             double balance) {
-        // Validate inputs
+
         if (id == null || id.trim().isEmpty()) {
             throw new IllegalArgumentException("User ID cannot be empty");
         }
@@ -33,7 +34,6 @@ public class AuthController {
             throw new IllegalArgumentException("Balance cannot be negative");
         }
 
-        // Check if user already exists
         if (UserService.getInstance().findUserByEmail(email) != null) {
             throw new IllegalArgumentException("User with email " + email + " already exists");
         }
@@ -68,7 +68,6 @@ public class AuthController {
             throw new IllegalArgumentException("Password cannot be empty");
         }
 
-        // Check if already logged in
         if (Session.getInstance().isLoggedIn()) {
             throw new IllegalStateException("User already logged in. Please logout first.");
         }
@@ -95,5 +94,24 @@ public class AuthController {
 
     public boolean isLoggedIn() {
         return Session.getInstance().isLoggedIn();
+    }
+
+    public boolean updateAddress(String userId, Address newAddress) {
+        Session.getInstance().requireLogin();
+
+        if (!ValidationUtil.isNotEmpty(userId)) {
+            throw new IllegalArgumentException("User ID cannot be empty");
+        }
+
+        if (newAddress == null) {
+            throw new IllegalArgumentException("Address cannot be null");
+        }
+
+        String currentUserId = Session.getInstance().getCurrentUserId();
+        if (!currentUserId.equals(userId) && !Session.getInstance().isAdmin()) {
+            throw new IllegalStateException("You are not authorized to update address for this user");
+        }
+
+        return UserService.getInstance().updateUserAddress(userId, newAddress);
     }
 }

@@ -13,7 +13,7 @@ public class Order {
     private String customerId;
     private String storeId;
     private String driverId;
-    
+
     private double totalPrice;
     private Address deliveryAddress;
     private List<OrderItem> items;
@@ -208,7 +208,6 @@ public class Order {
                 return false;
         }
     }
-    // #endregion
 
     public String toFileString() {
         return String.format("%s,%s,%s,%s,%.2f,%s,%s,%s,%s",

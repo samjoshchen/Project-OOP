@@ -5,6 +5,7 @@ import java.util.List;
 import com.martminds.enums.*;
 
 public class Customer extends User {
+
     private List<String> orderHistory;
     private List<String> mysteryBoxHistory;
 
@@ -18,6 +19,10 @@ public class Customer extends User {
         orderHistory.add(orderId);
     }
 
+    public void addMysteryBoxOrder(String orderId) {
+        mysteryBoxHistory.add(orderId);
+    }
+
     public void trackOrder(String orderId) {
         System.out.println("Tracking order: " + orderId);
     }
@@ -25,6 +30,14 @@ public class Customer extends User {
     public void repurchase(String orderId) {
         orderHistory.add(orderId);
         System.out.println("Repurchased order: " + orderId);
+    }
+
+    public List<String> getOrderHistory() {
+        return new ArrayList<>(orderHistory);
+    }
+
+    public List<String> getMysteryBoxHistory() {
+        return new ArrayList<>(mysteryBoxHistory);
     }
 
     public void viewOrderHistory() {

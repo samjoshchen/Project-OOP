@@ -5,24 +5,26 @@ import com.martminds.util.Input;
 public class MenuView {
 
     public int displayHomeMenu() {
-        System.out.println("\nMartMinds\n");
+        System.out.println("\nMartMinds System");
+        System.out.println("Your Smart Grocery Shopping Solution\n");
         System.out.println("1. Login");
         System.out.println("2. Register");
         System.out.println("3. Exit");
-        System.out.print("Choose option: ");
-        return Input.promptInt("");
+        System.out.println();
+        return Input.promptInt("Choose option: ");
     }
 
     public int displayCustomerMenu() {
         System.out.println("\nCustomer Menu\n");
         System.out.println("1. Browse Products & Shop");
-        System.out.println("2. View My Orders");
-        System.out.println("3. View Order History");
-        System.out.println("4. Manage Balance");
-        System.out.println("5. View Profile");
-        System.out.println("6. Logout");
-        System.out.print("Choose option: ");
-        return Input.promptInt("");
+        System.out.println("2. Mystery Box");
+        System.out.println("3. View My Orders");
+        System.out.println("4. View Order History");
+        System.out.println("5. Manage Balance");
+        System.out.println("6. View Profile");
+        System.out.println("7. Logout");
+        System.out.println();
+        return Input.promptInt("Choose option: ");
     }
 
     public int displayAdminMenu() {
@@ -34,12 +36,13 @@ public class MenuView {
         System.out.println("5. View All Orders");
         System.out.println("6. View All Users");
         System.out.println("7. Logout");
-        System.out.print("Choose option: ");
-        return Input.promptInt("");
+        System.out.println();
+        return Input.promptInt("Choose option: ");
     }
 
     public void displayWelcome(String username, String role) {
-        System.out.println("Welcome, " + username + " (" + role + ")!");
+        System.out.printf("\nWelcome, %s\n", username);
+        System.out.printf("Role: %s\n", role);
     }
 
     public void displayMessage(String message) {
@@ -56,5 +59,8 @@ public class MenuView {
 
     public void pressEnterToContinue() {
         Input.promptString("\nPress Enter to continue...");
+        for (int i = 0; i < 50; i++) {
+            System.out.println();
+        }
     }
 }

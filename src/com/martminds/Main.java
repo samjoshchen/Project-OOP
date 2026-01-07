@@ -23,6 +23,7 @@ public class Main {
 	private static ProductController productController;
 	private static OrderController orderController;
 	private static PaymentController paymentController;
+	private static DriverController driverController;
 
 	private static MenuView menuView;
 	private static UserView userView;
@@ -30,9 +31,12 @@ public class Main {
 	private static OrderView orderView;
 	private static PaymentView paymentView;
 	private static AdminView adminView;
+	private static DriverView driverView;
 
 	public static void main(String[] args) {
 		System.out.println("Welcome to MartMinds!");
+
+		com.martminds.util.FileHandler.ensureDataDirectoryExists();
 
 		initialize();
 		run();
@@ -45,6 +49,7 @@ public class Main {
 		productController = new ProductController();
 		orderController = new OrderController(OrderService.getInstance());
 		paymentController = new PaymentController();
+		driverController = new DriverController();
 
 		menuView = new MenuView();
 		userView = new UserView();
@@ -52,6 +57,7 @@ public class Main {
 		orderView = new OrderView();
 		paymentView = new PaymentView();
 		adminView = new AdminView();
+		driverView = new DriverView();
 	}
 
 	private static void run() {
@@ -65,6 +71,8 @@ public class Main {
 
 					if (Session.getInstance().isCustomer()) {
 						handleCustomerMenu();
+					} else if (Session.getInstance().isDriver()) {
+						handleDriverMenu();
 					} else if (Session.getInstance().isAdmin()) {
 						handleAdminMenu();
 					} else {
@@ -108,19 +116,70 @@ public class Main {
 
 	private static void handleRegister() {
 		try {
-			Map<String, String> data = userView.getRegistrationData();
-			String userId = "C" + RandomGenerator.generateId().substring(0, 3);
 
-			authController.register(
+			int roleChoice = userView.selectUserRole();
+			UserRole role;
+			if (roleChoice == 1) {
+				role = UserRole.CUSTOMER;
+			} else if (roleChoice == 2) {
+				role = UserRole.DRIVER;
+			} else {
+				menuView.displayError("Invalid role selection.");
+				menuView.pressEnterToContinue();
+				return;
+			}
+
+			Map<String, String> data = userView.getRegistrationData();
+
+			if ("exit".equals(data.get("name")) || "exit".equals(data.get("email")) ||
+					"exit".equals(data.get("password")) || "exit".equals(data.get("phone"))) {
+				menuView.displayMessage("Registration cancelled.");
+				menuView.pressEnterToContinue();
+				return;
+			}
+
+			com.martminds.model.common.Address address = null;
+			if (role == UserRole.CUSTOMER) {
+				while (address == null) {
+					address = userView.getAddressFromInput();
+					if (address == null) {
+						menuView.displayMessage("Address is mandatory for customers. Try again?");
+						int retry = Input.promptInt("1=Yes, 0=Cancel: ");
+						if (retry != 1) {
+							menuView.displayMessage("Registration cancelled.");
+							menuView.pressEnterToContinue();
+							return;
+						}
+					}
+				}
+			} else if (role == UserRole.DRIVER) {
+
+				int addAddressChoice = Input.promptInt("\nAdd delivery address? (1=Yes, 0=Skip): ");
+				if (addAddressChoice == 1) {
+					address = userView.getAddressFromInput();
+				}
+			}
+
+			String userIdPrefix = (role == UserRole.CUSTOMER) ? "C" : "D";
+			String userId = userIdPrefix + RandomGenerator.generateId().substring(0, 3);
+
+			double initialBalance = 0.0;
+
+			User newUser = authController.register(
 					userId,
 					data.get("name"),
 					data.get("email"),
 					data.get("password"),
 					data.get("phone"),
-					UserRole.CUSTOMER,
-					0.0);
+					role,
+					initialBalance);
 
-			menuView.displaySuccess("Registration successful! You can now login.");
+			if (address != null) {
+				newUser.setAddress(address);
+			}
+
+			menuView.displaySuccess("Registration successful! You are registered as a " + role.toString().toLowerCase()
+					+ ". You can now login.");
 			menuView.pressEnterToContinue();
 		} catch (Exception e) {
 			menuView.displayError("Registration failed: " + e.getMessage());
@@ -136,20 +195,22 @@ public class Main {
 				handleBrowseAndShop();
 				break;
 			case 2:
-				handleViewMyOrders();
+				handleMysteryBox();
 				break;
 			case 3:
-				handleViewOrderHistory();
+				handleViewMyOrders();
 				break;
 			case 4:
-				handleManageBalance();
+				handleViewOrderHistory();
 				break;
 			case 5:
-				handleViewProfile();
+				handleManageBalance();
 				break;
 			case 6:
-				handleLogout();
+				handleViewProfile();
 				break;
+			case 7:
+				return;
 			default:
 				menuView.displayError("Invalid option");
 				menuView.pressEnterToContinue();
@@ -168,7 +229,14 @@ public class Main {
 				return;
 			}
 
-			Address address = orderView.getDeliveryAddress();
+			User currentUser = Session.getInstance().getCurrentUser();
+			Address address = orderView.selectDeliveryAddress(currentUser);
+			if (address == null) {
+				menuView.displayMessage("Address selection cancelled.");
+				menuView.pressEnterToContinue();
+				return;
+			}
+
 			Order order = orderController.createOrder("S001", items, address);
 			menuView.displaySuccess("Order created! ID: " + order.getOrderId());
 
@@ -182,17 +250,21 @@ public class Main {
 
 	private static void handlePaymentForOrder(Order order) {
 		try {
-			if (!paymentView.confirmPayment(order.getTotalPrice())) {
+			User currentUser = Session.getInstance().getCurrentUser();
+			PaymentMethod method = paymentView.selectPaymentMethod(currentUser);
+
+			if (!paymentView.confirmPayment(order.getTotalPrice(), method)) {
 				menuView.displayMessage("Payment cancelled.");
 				menuView.pressEnterToContinue();
 				return;
 			}
 
-			PaymentMethod method = paymentView.selectPaymentMethod();
-			Map<String, String> details = paymentView.getPaymentDetails(method);
+			Map<String, String> details = paymentView.getPaymentDetails(method, currentUser);
 
 			String[] paymentDetails = new String[0];
-			if (method == PaymentMethod.EWALLET && details.containsKey("walletId")) {
+			if (method == PaymentMethod.CASH && details.containsKey("citizenId")) {
+				paymentDetails = new String[] { details.get("citizenId") };
+			} else if (method == PaymentMethod.EWALLET && details.containsKey("walletId")) {
 				paymentDetails = new String[] { details.get("walletId") };
 			} else if (method == PaymentMethod.CREDIT_CARD) {
 				paymentDetails = new String[] {
@@ -282,9 +354,39 @@ public class Main {
 		try {
 			User currentUser = Session.getInstance().getCurrentUser();
 			userView.displayUserProfile(currentUser);
-			menuView.pressEnterToContinue();
+
+			if (Session.getInstance().isCustomer()) {
+				int choice = Input.promptInt("1=Change Address, 0=Back: ");
+				if (choice == 1) {
+					handleChangeAddress();
+				}
+			} else {
+				menuView.pressEnterToContinue();
+			}
 		} catch (Exception e) {
 			menuView.displayError("Failed to load profile: " + e.getMessage());
+			menuView.pressEnterToContinue();
+		}
+	}
+
+	private static void handleChangeAddress() {
+		try {
+			User currentUser = Session.getInstance().getCurrentUser();
+			System.out.println("\nChanging Address for: " + currentUser.getName());
+
+			com.martminds.model.common.Address newAddress = userView.getAddressFromInput();
+
+			if (newAddress == null) {
+				menuView.displayMessage("Address change cancelled.");
+				menuView.pressEnterToContinue();
+				return;
+			}
+
+			currentUser.setAddress(newAddress);
+			menuView.displaySuccess("Address updated successfully!");
+			menuView.pressEnterToContinue();
+		} catch (Exception e) {
+			menuView.displayError("Failed to change address: " + e.getMessage());
 			menuView.pressEnterToContinue();
 		}
 	}
@@ -312,12 +414,12 @@ public class Main {
 				handleViewAllUsers();
 				break;
 			case 7:
-				handleLogout();
-				break;
+				return;
 			default:
-				menuView.displayError("Invalid option");
-				menuView.pressEnterToContinue();
+				menuView.displayError("Invalid choice. Please try again.");
 		}
+
+		menuView.pressEnterToContinue();
 	}
 
 	private static void handleAddProduct() {
@@ -443,13 +545,204 @@ public class Main {
 		}
 	}
 
-	private static void handleLogout() {
+	private static void handleMysteryBox() {
 		try {
-			authController.logout();
-			menuView.displaySuccess("Logged out successfully!");
+			System.out.println("\nMystery Box\n");
+			System.out.println("Enter your budget and get randomly selected products");
+			System.out.println("with 10% automatic discount!\n");
+
+			double budget = Input.promptDoublePositive("Enter your budget (min Rp 10,000): ");
+
+			if (budget < 10000) {
+				menuView.displayError("Minimum budget is Rp 10,000");
+				menuView.pressEnterToContinue();
+				return;
+			}
+
+			List<Product> availableProducts = productController.getAllProducts();
+			List<Product> selectedProducts = new java.util.ArrayList<>();
+			double totalCost = 0;
+			double discountedTotal = 0;
+
+			java.util.Collections.shuffle(availableProducts, new java.util.Random());
+
+			for (Product product : availableProducts) {
+				if (product.isAvailable()) {
+					double discountedPrice = product.getPrice() * 0.9;
+					if (discountedTotal + discountedPrice <= budget) {
+						selectedProducts.add(product);
+						totalCost += product.getPrice();
+						discountedTotal += discountedPrice;
+					}
+				}
+			}
+
+			if (selectedProducts.isEmpty()) {
+				menuView.displayMessage("No products available within your budget.");
+				menuView.pressEnterToContinue();
+				return;
+			}
+
+			System.out.println("\nMystery Box Contents\n");
+			for (Product product : selectedProducts) {
+				System.out.printf("- %s (Rp %.0f -> Rp %.0f with 10%% discount)%n",
+						product.getName(), product.getPrice(), product.getPrice() * 0.9);
+			}
+			System.out.println();
+			System.out.printf("Original Total   : Rp %.0f%n", totalCost);
+			System.out.printf("Discounted Total : Rp %.0f%n", discountedTotal);
+			System.out.printf("You save         : Rp %.0f (10%% discount)%n\n", totalCost - discountedTotal);
+
+			String confirm = Input.promptString("Proceed with purchase? (yes/no): ");
+			if (!confirm.equalsIgnoreCase("yes") && !confirm.equalsIgnoreCase("y")) {
+				menuView.displayMessage("Purchase cancelled.");
+				menuView.pressEnterToContinue();
+				return;
+			}
+
+			User currentUser = Session.getInstance().getCurrentUser();
+			Address address = orderView.selectDeliveryAddress(currentUser);
+			if (address == null) {
+				menuView.displayMessage("Address selection cancelled.");
+				menuView.pressEnterToContinue();
+				return;
+			}
+
+			List<OrderItem> items = new java.util.ArrayList<>();
+			for (Product product : selectedProducts) {
+				try {
+					OrderItem item = new OrderItem(
+							java.util.UUID.randomUUID().toString(),
+							product.getProductId(),
+							product.getName(),
+							1,
+							product.getPrice() * 0.9);
+					items.add(item);
+				} catch (Exception e) {
+					menuView.displayError("Error creating order item: " + e.getMessage());
+				}
+			}
+
+			Order order = orderController.createOrder("S001", items, address);
+			menuView.displaySuccess("Mystery Box order created! ID: " + order.getOrderId());
+
+			handlePaymentForOrder(order);
+
+		} catch (Exception e) {
+			menuView.displayError("Mystery box failed: " + e.getMessage());
+			menuView.pressEnterToContinue();
+		}
+	}
+
+	private static void handleDriverMenu() {
+		int choice = driverView.displayDriverMenu();
+
+		switch (choice) {
+			case 1:
+				handleViewAvailableOrders();
+				break;
+			case 2:
+				handleViewMyDeliveries();
+				break;
+			case 3:
+				handleAcceptOrder();
+				break;
+			case 4:
+				handleUpdateDeliveryStatus();
+				break;
+			case 5:
+				handleViewProfile();
+				break;
+			case 6:
+				return;
+			default:
+				menuView.displayError("Invalid option");
+				menuView.pressEnterToContinue();
+		}
+	}
+
+	private static void handleViewAvailableOrders() {
+		try {
+			List<Order> orders = driverController.getAvailableOrders();
+			driverView.displayAvailableOrders(orders);
 			menuView.pressEnterToContinue();
 		} catch (Exception e) {
-			menuView.displayError("Logout failed: " + e.getMessage());
+			menuView.displayError("Failed to load available orders: " + e.getMessage());
+			menuView.pressEnterToContinue();
+		}
+	}
+
+	private static void handleViewMyDeliveries() {
+		try {
+			List<Order> orders = driverController.getMyDeliveries();
+			driverView.displayMyDeliveries(orders);
+			menuView.pressEnterToContinue();
+		} catch (Exception e) {
+			menuView.displayError("Failed to load deliveries: " + e.getMessage());
+			menuView.pressEnterToContinue();
+		}
+	}
+
+	private static void handleAcceptOrder() {
+		try {
+			List<Order> orders = driverController.getAvailableOrders();
+			driverView.displayAvailableOrders(orders);
+
+			String orderId = driverView.selectOrderToAccept();
+			if (orderId.equalsIgnoreCase("cancel")) {
+				return;
+			}
+
+			boolean success = driverController.acceptOrder(orderId);
+			if (success) {
+				menuView.displaySuccess("Order accepted successfully!");
+			} else {
+				menuView.displayError("Failed to accept order");
+			}
+			menuView.pressEnterToContinue();
+		} catch (Exception e) {
+			menuView.displayError("Failed to accept order: " + e.getMessage());
+			menuView.pressEnterToContinue();
+		}
+	}
+
+	private static void handleUpdateDeliveryStatus() {
+		try {
+			List<Order> orders = driverController.getMyDeliveries();
+			driverView.displayMyDeliveries(orders);
+
+			String orderId = driverView.selectOrderToUpdate();
+			if (orderId.equalsIgnoreCase("cancel")) {
+				return;
+			}
+
+			int statusChoice = driverView.selectDeliveryStatus();
+			com.martminds.enums.OrderStatus newStatus = null;
+
+			switch (statusChoice) {
+				case 1:
+					newStatus = com.martminds.enums.OrderStatus.OUT_FOR_DELIVERY;
+					break;
+				case 2:
+					newStatus = com.martminds.enums.OrderStatus.DELIVERED;
+					break;
+				case 3:
+					return;
+				default:
+					menuView.displayError("Invalid status choice");
+					menuView.pressEnterToContinue();
+					return;
+			}
+
+			boolean success = driverController.updateDeliveryStatus(orderId, newStatus);
+			if (success) {
+				menuView.displaySuccess("Delivery status updated successfully!");
+			} else {
+				menuView.displayError("Failed to update delivery status");
+			}
+			menuView.pressEnterToContinue();
+		} catch (Exception e) {
+			menuView.displayError("Failed to update status: " + e.getMessage());
 			menuView.pressEnterToContinue();
 		}
 	}

@@ -1,6 +1,5 @@
 package com.martminds.exception;
 
-// When payment processing fails
 public class PaymentFailedException extends Exception {
     private String paymentId;
     private String reason;

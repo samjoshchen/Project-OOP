@@ -1,6 +1,5 @@
 package com.martminds.exception;
 
-// When product is out of stock
 public class OutOfStockException extends Exception {
     private String productId;
     private int requestedQuantity;

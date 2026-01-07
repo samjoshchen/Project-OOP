@@ -1,6 +1,5 @@
 package com.martminds.exception;
 
-// When user attempts to perform a transaction with insufficient balance
 public class InsufficientBalanceException extends Exception {
     private double requiredAmount;
     private double currentBalance;

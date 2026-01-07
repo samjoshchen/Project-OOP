@@ -103,7 +103,6 @@ public class Address {
         return fullAddress.toString();
     }
 
-    // Used for logging, storing, and displaying address info
     @Override
     public String toString() {
         return getFullAddress();

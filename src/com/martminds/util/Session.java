@@ -26,7 +26,6 @@ public class Session {
         return instance;
     }
 
-    // Legacy method for backward compatibility
     @Deprecated
     public static Session getSession() {
         return getInstance();

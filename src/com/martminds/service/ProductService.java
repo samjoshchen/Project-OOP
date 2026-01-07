@@ -1,16 +1,23 @@
 package com.martminds.service;
 
 import com.martminds.model.product.Product;
+import com.martminds.util.FileHandler;
+import com.martminds.util.Logger;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ProductService {
     private static ProductService instance;
     private List<Product> products;
+    private static final String PRODUCT_FILE = "products.csv";
 
     private ProductService() {
         this.products = new ArrayList<>();
-        createSampleProducts();
+        loadFromFile();
+        if (products.isEmpty()) {
+            createSampleProducts();
+            saveToFile();
+        }
     }
 
     public static ProductService getInstance() {
@@ -18,6 +25,54 @@ public class ProductService {
             instance = new ProductService();
         }
         return instance;
+    }
+
+    private void loadFromFile() {
+        List<String> lines = FileHandler.readFile(PRODUCT_FILE);
+
+        for (String line : lines) {
+            if (line.trim().isEmpty())
+                continue;
+
+            try {
+                String[] fields = FileHandler.parseCSVLine(line);
+                if (fields.length < 7)
+                    continue;
+
+                String productId = fields[0];
+                String name = fields[1];
+                double price = Double.parseDouble(fields[2]);
+                int stock = Integer.parseInt(fields[3]);
+                String description = fields[4];
+                String storeId = fields[5];
+                String category = fields[6];
+
+                Product product = new Product(productId, name, price, stock, description, storeId, category);
+                products.add(product);
+            } catch (Exception e) {
+                Logger.error("Error parsing product line: " + line + " - " + e.getMessage());
+            }
+        }
+
+        Logger.info("Loaded " + products.size() + " products from file");
+    }
+
+    private void saveToFile() {
+        List<String> lines = new ArrayList<>();
+
+        for (Product product : products) {
+            String line = FileHandler.formatCSVLine(
+                    product.getProductId(),
+                    product.getName(),
+                    String.valueOf(product.getPrice()),
+                    String.valueOf(product.getStock()),
+                    product.getDescription(),
+                    product.getStoreId(),
+                    product.getCategory());
+            lines.add(line);
+        }
+
+        FileHandler.writeFile(PRODUCT_FILE, lines);
     }
 
     public List<Product> getAllProducts() {
@@ -49,6 +104,7 @@ public class ProductService {
         }
 
         products.add(product);
+        saveToFile();
         return true;
     }
 
@@ -66,6 +122,7 @@ public class ProductService {
         }
 
         product.updateStock(quantity);
+        saveToFile();
         return true;
     }
 
@@ -94,7 +151,11 @@ public class ProductService {
         if (product == null) {
             return false;
         }
-        return products.remove(product);
+        boolean removed = products.remove(product);
+        if (removed) {
+            saveToFile();
+        }
+        return removed;
     }
 
     public List<String> getAllCategories() {
