@@ -118,7 +118,6 @@ public class CreditCardPayment extends Payment {
         }
     }
 
-    // Used for logging, storing, and displaying payment info
     @Override
     public String toString() {
         return String.format("CreditCardPayment[ID=%s, Amount=%.2f, Card=%s, Holder=%s, Status=%s]",

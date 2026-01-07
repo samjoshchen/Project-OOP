@@ -3,6 +3,8 @@ package com.martminds.model.payment;
 import com.martminds.enums.PaymentMethod;
 import com.martminds.enums.PaymentStatus;
 import com.martminds.exception.PaymentFailedException;
+import com.martminds.model.user.User;
+import com.martminds.service.UserService;
 
 public class EWalletPayment extends Payment {
     private String walletId;
@@ -18,7 +20,7 @@ public class EWalletPayment extends Payment {
     public EWalletPayment(String paymentId, String userId, String orderId, double amount, String walletId) {
         super(paymentId, userId, orderId, amount, PaymentMethod.EWALLET);
         this.walletId = walletId;
-        this.walletProvider = "Generic E-Wallet";
+        this.walletProvider = "MartMinds Balance";
     }
 
     public String getWalletId() {
@@ -47,32 +49,54 @@ public class EWalletPayment extends Payment {
             throw new PaymentFailedException(getPaymentId(), "Wallet ID is required");
         }
 
-        if (walletProvider == null || walletProvider.trim().isEmpty()) {
-            throw new PaymentFailedException(getPaymentId(), "Wallet provider is required");
-        }
+        if ("MartMinds Balance".equalsIgnoreCase(this.walletProvider)) {
 
-        if (!walletId.matches("[a-zA-Z0-9]{6,20}")) {
-            throw new PaymentFailedException(getPaymentId(),
-                    "Invalid wallet ID format (expected 6-20 alphanumeric characters)");
+            User user = UserService.getInstance().findUserById(getUserId());
+            if (user == null) {
+                throw new PaymentFailedException(getPaymentId(), "User not found");
+            }
+
+            if (user.getBalance() < getAmount()) {
+                throw new PaymentFailedException(getPaymentId(),
+                        String.format("Insufficient MartMinds Balance. Required: Rp %.0f, Available: Rp %.0f",
+                                getAmount(), user.getBalance()));
+            }
+
+            boolean withdrawn = user.withdrawFunds(getAmount());
+            if (!withdrawn) {
+                throw new PaymentFailedException(getPaymentId(), "Failed to deduct balance");
+            }
+        } else {
+
+            System.out.println("Processing external e-wallet payment via " + walletProvider + "...");
+            System.out.println("Payment successful via " + walletProvider + " (simulated)");
         }
 
         setStatus(PaymentStatus.SUCCESS);
-
         return true;
     }
 
     @Override
     public boolean refund() throws PaymentFailedException {
-        boolean refunded = super.refund();
 
-        if (refunded) {
-            System.out.println("E-Wallet refund initiated to " + walletProvider + " ID: " + walletId);
+        if ("MartMinds Balance".equalsIgnoreCase(this.walletProvider)) {
+            User user = UserService.getInstance().findUserById(getUserId());
+            if (user == null) {
+                throw new PaymentFailedException(getPaymentId(), "User not found for refund");
+            }
+
+            user.addFunds(getAmount());
+            System.out.println("Refund of Rp " + String.format("%,.0f", getAmount()) +
+                    " added back to MartMinds Balance");
+        } else {
+
+            System.out.println("Refund processed via " + walletProvider + " (simulated)");
         }
 
-        return refunded;
+        setStatus(PaymentStatus.CANCELLED);
+        return true;
     }
 
-    // Used for logging, storing, and displaying payment info
     @Override
     public String toString() {
         return String.format("EWalletPayment[ID=%s, Amount=%.2f, Provider=%s, WalletID=%s, Status=%s]",

@@ -7,7 +7,6 @@ public class ValidationUtil {
     private static final Pattern PHONE_PATTERN = Pattern.compile("^[0-9]{10,15}$");
     private static final Pattern POSTAL_CODE_PATTERN = Pattern.compile("^[0-9]{5}$");
 
-    // Validate email format
     public static boolean isValidEmail(String email) {
         if (email == null || email.trim().isEmpty()) {
             return false;
@@ -15,7 +14,6 @@ public class ValidationUtil {
         return EMAIL_PATTERN.matcher(email).matches();
     }
 
-    // Validate phone number format
     public static boolean isValidPhone(String phone) {
         if (phone == null || phone.trim().isEmpty()) {
             return false;
@@ -23,7 +21,6 @@ public class ValidationUtil {
         return PHONE_PATTERN.matcher(phone.replaceAll("[\\s-]", "")).matches();
     }
 
-    // Validate postal code format
     public static boolean isValidPostalCode(String postalCode) {
         if (postalCode == null || postalCode.trim().isEmpty()) {
             return false;
@@ -31,7 +28,6 @@ public class ValidationUtil {
         return POSTAL_CODE_PATTERN.matcher(postalCode).matches();
     }
 
-    // Validate password
     public static boolean isValidPassword(String password) {
         if (password == null || password.length() < 8) {
             return false;
@@ -39,22 +35,18 @@ public class ValidationUtil {
         return true;
     }
 
-    // Validate price
     public static boolean isValidPrice(double price) {
         return price > 0;
     }
 
-    // Validate quantity
     public static boolean isValidQuantity(int quantity) {
         return quantity > 0;
     }
 
-    // Check if string is not empty
     public static boolean isNotEmpty(String str) {
         return str != null && !str.trim().isEmpty();
     }
 
-    // Validate credit card number using Luhn algorithm
     public static boolean isValidCreditCard(String cardNumber) {
         if (cardNumber == null || cardNumber.trim().isEmpty()) {
             return false;
@@ -65,7 +57,6 @@ public class ValidationUtil {
             return false;
         }
 
-        // Luhn algorithm
         int sum = 0;
         boolean alternate = false;
         for (int i = cleaned.length() - 1; i >= 0; i--) {

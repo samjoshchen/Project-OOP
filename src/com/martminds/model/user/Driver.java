@@ -31,4 +31,24 @@ public class Driver extends User {
         this.latitude = latitude;
         this.longitude = longitude;
     }
+
+    public boolean isAvailable() {
+        return isAvailable;
+    }
+
+    public void setAvailable(boolean available) {
+        isAvailable = available;
+    }
+
+    public List<String> getDeliveryHistory() {
+        return new ArrayList<>(deliveryHistory);
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
 }

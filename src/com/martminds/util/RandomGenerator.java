@@ -8,12 +8,10 @@ import java.util.UUID;
 public class RandomGenerator {
     private static final Random random = new Random();
 
-    // UUID generator
     public static String generateId() {
         return UUID.randomUUID().toString();
     }
 
-    // Numeric ID generator with specified length
     public static String generateNumericId(int length) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < length; i++) {
@@ -22,7 +20,6 @@ public class RandomGenerator {
         return sb.toString();
     }
 
-    // Alphanumeric code generator with specified length
     public static String generateCode(int length) {
         String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         StringBuilder code = new StringBuilder();
@@ -32,7 +29,6 @@ public class RandomGenerator {
         return code.toString();
     }
 
-    // Select random items from a list
     public static <T> List<T> selectRandomItems(List<T> items, int count) {
         if (items == null || items.isEmpty() || count <= 0) {
             return new ArrayList<>();
@@ -50,17 +46,14 @@ public class RandomGenerator {
         return selected;
     }
 
-    // Generate random integer within a range
     public static int randomInt(int min, int max) {
         return random.nextInt(max - min + 1) + min;
     }
 
-    // Generate random double within a range
     public static double randomDouble(double min, double max) {
         return min + (max - min) * random.nextDouble();
     }
 
-    // Generate random boolean value
     public static boolean randomBoolean() {
         return random.nextBoolean();
     }

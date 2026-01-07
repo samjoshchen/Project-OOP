@@ -15,7 +15,7 @@ public class AdminView {
         System.out.println("\nAll Users\n");
         System.out.printf("%-10s %-25s %-30s %-10s\n",
                 "ID", "Name", "Email", "Role");
-        System.out.println();
+        System.out.println("----------+-------------------------+------------------------------+----------");
 
         for (User u : users) {
             System.out.printf("%-10s %-25s %-30s %-10s\n",
@@ -24,7 +24,7 @@ public class AdminView {
                     u.getEmail().length() > 30 ? u.getEmail().substring(0, 27) + "..." : u.getEmail(),
                     u.getRole());
         }
-        System.out.println("\n");
+        System.out.println();
     }
 
     public void displayAllOrders(List<Order> orders) {
@@ -36,7 +36,7 @@ public class AdminView {
         System.out.println("\nAll Orders\n");
         System.out.printf("%-15s %-15s %-12s %-15s\n",
                 "Order ID", "Customer ID", "Total", "Status");
-        System.out.println();
+        System.out.println("---------------+---------------+------------+---------------");
 
         for (Order o : orders) {
             System.out.printf("%-15s %-15s Rp%-10.0f %-15s\n",
@@ -45,6 +45,6 @@ public class AdminView {
                     o.getTotalPrice(),
                     o.getStatus());
         }
-        System.out.println("\n");
+        System.out.println();
     }
 }

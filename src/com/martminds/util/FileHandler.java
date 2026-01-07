@@ -96,7 +96,6 @@ public class FileHandler {
             }
         }
 
-        // Add the last field
         fields.add(currentField.toString().trim());
 
         return fields.toArray(new String[0]);

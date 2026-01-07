@@ -1,6 +1,7 @@
 package com.martminds.model.user;
 
 import com.martminds.enums.*;
+import com.martminds.model.common.Address;
 
 public abstract class User {
 	private String userId;
@@ -10,6 +11,7 @@ public abstract class User {
 	private String phone;
 	private double balance;
 	private UserRole role;
+	private Address address;
 
 	public User(String userId, String name, String email, String password, String phone, double balance,
 			UserRole role) {
@@ -20,6 +22,7 @@ public abstract class User {
 		this.phone = phone;
 		this.balance = balance;
 		this.role = role;
+		this.address = null;
 	}
 
 	public String getUserId() {
@@ -85,6 +88,14 @@ public abstract class User {
 	public void updateProfile(String name, String phone) {
 		this.name = name;
 		this.phone = phone;
+	}
+
+	public Address getAddress() {
+		return address;
+	}
+
+	public void setAddress(Address address) {
+		this.address = address;
 	}
 
 	public void addFunds(double amount) {

@@ -1,6 +1,5 @@
 package com.martminds.exception;
 
-// When user attempts an unauthorized action
 public class UnauthorizedException extends Exception {
     private String userId;
     private String attemptedAction;

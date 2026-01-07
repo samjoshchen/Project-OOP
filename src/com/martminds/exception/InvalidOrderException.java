@@ -1,6 +1,5 @@
 package com.martminds.exception;
 
-// When order is invalid or cannot be processed
 public class InvalidOrderException extends Exception {
     private String orderId;
 

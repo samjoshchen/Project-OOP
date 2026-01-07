@@ -14,6 +14,8 @@ public class ProductController {
             String description, String storeId, String category) {
         Session.getInstance().requireRole(UserRole.ADMIN);
 
+        productId = productId.toUpperCase();
+
         if (!ValidationUtil.isNotEmpty(productId)) {
             throw new IllegalArgumentException("Product ID cannot be empty");
         }
