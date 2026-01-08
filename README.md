@@ -159,7 +159,7 @@ The application provides detailed validation prompts with format requirements an
 ### Simplified (Models Only)
 
 ```mermaid
-classDiagram
+[classDiagram
     class Address {
         -String street
         -String city
@@ -322,7 +322,7 @@ classDiagram
     Payment --> User : paid by
     Payment --> Order : for
     Product --> Store : sold by
-    MysteryBox --> Store : from
+    MysteryBox --> Store : from](https://www.mermaidchart.com/play#pako:eNqlV9tu2zgQ_RUiT8q2_gEjCOB1WjRAmxr1FvvSh1AkaxMrkSpJ2fG29bfvUKRkkqJUo-sHK-EczeXMhePvN0RSdrO8IRXW-oHjncL1F4Hg052gFaWKwfO7O7SfxdYoLnZIG8WYGZ8Tbk7j00Zqg6s1WBvLKAddnGR0NUoeuCDBO692zLxtq8o7VtwiB3WIn19E6P1nzVTo-t0dLsEUJub-fmysBfQjHZ8LXGecZjXmVcZjsHuUKqOm2UsR6qGyLSuGSlzhKMKF9fqTBJGCr-C8zwV2z4CTSu64KDqPXg8e3KJSggIsAiC8-rYVVBe4lq0wt-ggeeDqqyM3e6rwMQZFehKK1602smbqbL0-o5Bta-3DSRumTn_Kl4-KMlVI-_1IQ8OJwhWtuUi0JZAHxQ9ZiwvvKeJ6dQAycBkR-B7q7OyycUaUVVbL6R0cSnUK3SaENWbS3w7TNhQb9uB1bA02re7Br6E17P8zQW6UpC0xubZqnOiKQvQF1EDrhMdcGHBAkn8yjcY0UbwxXIpM30JAu4iJS6dLxR7H4W-tleJbi4WBnh9xFCShmC-iS5XkGCnly--z8cvg8pxYEnHv_TbP5ogWV2A-t2c78jSH1_2BjjtjE0sL__wfLG6tP_lJnTqap3BywAwsSmFgeD61dcnUmHuFzTCJ-zA_dWeFYEf310xTdB33aFidi0H2wlwcMz3jRU9xpDa9fd1O1NDKbFpF9liHlw_BFWkrW_ptaSRcaJAS99J0RNPRZNwlfpzmZJNppN08jCQ-ks7HTdISfZr7Cbgapbur4yEdZ8ThO5R3Ijf0_KyLk27fKob3RyU9sPiXpzA7XP1QDWzN1E5yz0yMkY-_Q_vE-IHjp6sm0BxZ1-ZimCnQfa1do4RhIpoomplVJCt85esRvYodWIC7RZGJ_H2FTzWAr9-lGvdCjripNWvcE55Qt4YE596bD8zsJUV19xiLp-oTeCFAsUcVuTVJsa-wAP1i3K6x3nsl5_6ZqzvYh_m_TOQiU4wwSDtdpRF6OYwfsWOp9NI_604-P4Pe_I2riplrPD12yFxunGRjt3HaT_6UDsUoN2us6FWkAG50jQSyd7KiORl7aXjuFieHQ-JVt_vf_VgshhUVLeF1qHmqU0S3c06L3b6ZyvuecDYuxTCLi7MxrzIlNEQ7vJt1fwD4cncu3S3NhdcZ7FYW2G-eISyId7G4H37zLRHcfk7mVotYWEm7VFGETehMjPFjTcNFlHpzFfwCCpLYVJiA3fKUYoY8eT1ZkAtlib4qWU_7NG0uh54xnIPncjA42SUxRsE4Ap3wIzEpE4vqsgZOYn6xGcqdVQhX-m7q1YZcaOi2jMcZvp6fn29-_gffehun)
 ```
 
 ### Complete
