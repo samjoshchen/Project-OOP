@@ -180,22 +180,37 @@ classDiagram
         -UserRole role
         -Address address
         +login(email, password) boolean
+        +updateProfile(name, phone) void
         +addFunds(amount) void
         +withdrawFunds(amount) boolean
     }
 
     class Customer~User~  {
+        -List~String~ orderHistory
+        -List~String~ mysteryBoxHistory
+        +placeOrder(orderId) void
         +addMysteryBoxOrder(orderId) void
+        +trackOrder(orderId) void
+        +repurchase(orderId) void
+        +viewOrdedrHistory() void 
     }
 
     class Admin~User~  {
+        -List~String~ adminPermission
+        +addPPermission(permission) void
+        +viewOrderHistory() void
+        +viewMysteryBoxHistory() void
     }
 
     class Driver~User~  {
         -boolean isAvailable
         -List~String~ deliveryHistory
+        -double latitude
+        -double longitude
         +acceptOrder(orderId) void
         +updateDeliveryStatus(orderId, status) void
+        +updateLocation(latitude, longitude) void
+        +isAvailable() boolean
     }
 
     class Product {
@@ -221,6 +236,7 @@ classDiagram
         -List~Product~ possibleProducts
         +addPossibleProduct(Product) void
         +isAvailable() boolean
+        +updateStock(quantity) void
     }
 
     class Store {
@@ -229,7 +245,10 @@ classDiagram
         -Address address
         -String contactNumber
         -double rating
+        -long totalRate
         +addRating(newRating) void
+        +setRating(rating) void
+        +getRating() double
     }
 
     class OrderItem {
@@ -250,22 +269,32 @@ classDiagram
         -Address deliveryAddress
         -List~OrderItem~ items
         -OrderStatus status
+        -LocalDateTime createdAt
         +addItem(OrderItem) void
+        +removeItem(orderItemId) void
         +calculateTotal() void
         +updateStatus(OrderStatus) void
+        +assignDriver(driverId) void
+        +markAsDelivered() void
+        +cancel() void
     }
 
     class MysteryBoxOrder {
         -String boxOrderId
         -String customerId
         -String boxId
+        -String driverId
         -String boxName
         -double price
         -OrderStatus status
         -Address deliveryAddress
         -List~Product~ actualContents
+        -boolean contentsRevaled
         +setActualContents(products) void
         +revealContents() List~Product~
+        +assignDriver(driverId) void
+        +markAsDelivered() void
+        +cancel() void
     }
 
     class Payment {
@@ -276,8 +305,12 @@ classDiagram
         -double amount
         -PaymentMethod method
         -PaymentStatus status
+        -LocalDateTime createdAt
+        -LocalDateTime lastUpdatedAt
         +processPayment() boolean
         +refund() boolean
+        +validateAmount() boolean
+        +updateStatus(status) void
     }
 
     class CashPayment~Payment~ {
@@ -285,11 +318,15 @@ classDiagram
         -double receivedAmount
         -double changeAmount
         +calculateChange() double
+        +maskCitizenId() String
+        +processPayment() boolean
     }
 
     class EWalletPayment~Payment~ {
         -String walletId
         -String walletProvider
+        +processPayment() boolean
+        +refund() boolean 
     }
 
     class CreditCardPayment~Payment~ {
@@ -297,6 +334,9 @@ classDiagram
         -String cardHolder
         -String expiry
         -String cvv
+        +maskCardNumber() String
+        +isCardExpired() boolean
+        +processPayment() boolean
     }
 
     User <|-- Customer : extends
